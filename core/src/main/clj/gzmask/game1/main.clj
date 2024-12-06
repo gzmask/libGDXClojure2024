@@ -1,4 +1,5 @@
 (ns gzmask.game1.main
+  (:require [nrepl.server :refer [start-server stop-server]])
   (:import [com.badlogic.gdx ApplicationAdapter Gdx]
            [com.badlogic.gdx.utils ScreenUtils]
            [com.badlogic.gdx.graphics GL20 Texture]
@@ -7,6 +8,8 @@
 (gen-class
     :name gzmask.game1.main
     :extends com.badlogic.gdx.ApplicationAdapter)
+
+(defonce nrepl-server (start-server :port 7888))
 
 (def batch (atom nil))
 (def image (atom nil))
@@ -22,5 +25,6 @@
   (.end @batch))
 
 (defn -dispose [this]
+  (stop-server nrepl-server)
   (.dispose @batch)
   (.dispose @image))
