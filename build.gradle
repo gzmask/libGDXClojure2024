@@ -56,6 +56,16 @@ configure(subprojects) {
   }
 }
 
+task compileClojure(type: Exec) {
+  commandLine 'clj', '-M:compile'
+  standardOutput = new ByteArrayOutputStream()
+  group 'Application'
+  description 'Tasks to compile clojure code'
+  doLast {
+      println "Output: $standardOutput"
+  }
+}
+
 subprojects {
   version = '$projectVersion'
   ext.appName = 'libGDX-1'
@@ -68,6 +78,15 @@ subprojects {
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://jitpack.io' }
   }
+
+  afterEvaluate { subproject ->
+    if (subproject.name == 'lwjgl3') {
+      subproject.tasks.named('run').configure {
+        dependsOn compileClojure
+      }
+    }
+  }
+
 }
 
 eclipse.project.name = 'libGDX-1' + '-parent'

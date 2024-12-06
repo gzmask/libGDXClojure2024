@@ -21,10 +21,10 @@ parameters:
 ## Clojure compilation
 
     $ mkdir classes
-    $ clj -e "(compile 'gzmask.game1.main)"
+    $ clj -M:compile
 
 ## Run game
 
-Run the project directly after clojure code is compiled and built to classes
+compile clojure and run the game directly
 
     $ ./gradlew lwjgl3:run
