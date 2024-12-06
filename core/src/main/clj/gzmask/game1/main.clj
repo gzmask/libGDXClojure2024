@@ -16,7 +16,6 @@
   (reset! image (Texture. "libgdx.png")))
 
 (defn -render [this]
-  (println :raydebug (type 14.0))
   (ScreenUtils/clear 0.15 0.15 0.2 1)
   (.begin @batch)
   (.draw @batch @image (float 140) (float 210))
