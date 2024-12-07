@@ -8,6 +8,7 @@
            [com.badlogic.gdx.graphics.g3d.attributes ColorAttribute]
            [com.badlogic.gdx.graphics.g3d Attribute Material]
            [com.badlogic.gdx.graphics.g3d Environment]
+           [com.badlogic.gdx.graphics.g3d.environment DirectionalLight]
            [com.badlogic.gdx.math Vector3]
            [com.badlogic.gdx.graphics.g2d SpriteBatch]
            [com.badlogic.gdx.graphics Color])
@@ -22,6 +23,7 @@
 (def model-batch (atom nil))
 (def ground-model (atom nil))
 (def ground-instance (atom nil))
+(def environment (atom nil))
 
 (defn -create [this]
   (reset! sprite-batch (SpriteBatch.))
@@ -36,6 +38,13 @@
   (set! (.-near @camera) 1)
   (set! (.-far @camera) 300)
   (.update @camera)
+  (reset! environment (Environment.))
+  (.set @environment (ColorAttribute. ColorAttribute/AmbientLight Color/DARK_GRAY))
+  (.add @environment
+      (.set (DirectionalLight.) Color/WHITE (Vector3. 1 -3 1)))
+  (.add @environment
+      (.set (DirectionalLight.) Color/WHITE (Vector3. 1 1 1)))
+
 
   (let [builder (ModelBuilder.)
         material (Material. (into-array Attribute [(ColorAttribute/createDiffuse Color/BROWN)]))
@@ -51,9 +60,11 @@
 (defn -render [this]
   (ScreenUtils/clear 0.15 0.15 0.2 1)
 
+  (.set (.position @camera) 1 10 10)
+  (.update @camera)
   ;; Render 3D models
   (.begin @model-batch @camera)
-  (.render @model-batch @ground-instance)
+  (.render @model-batch @ground-instance @environment)
   (.end @model-batch)
 
   (.begin @sprite-batch)
