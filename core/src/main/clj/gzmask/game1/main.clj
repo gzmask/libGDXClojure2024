@@ -3,11 +3,9 @@
   (:import [com.badlogic.gdx ApplicationAdapter Gdx]
            [com.badlogic.gdx.utils ScreenUtils]
            [com.badlogic.gdx.graphics GL20 Texture]
-           [com.badlogic.gdx.graphics.g2d SpriteBatch]))
-
-(gen-class
-    :name gzmask.game1.main
-    :extends com.badlogic.gdx.ApplicationAdapter)
+           [com.badlogic.gdx.graphics.g2d SpriteBatch])
+  (:gen-class :name gzmask.game1.main
+              :extends com.badlogic.gdx.ApplicationAdapter))
 
 (defonce nrepl-server (start-server :port 7888))
 
