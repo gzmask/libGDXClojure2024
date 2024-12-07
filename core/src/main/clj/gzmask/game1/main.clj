@@ -9,20 +9,20 @@
 
 (defonce nrepl-server (start-server :port 7888))
 
-(def batch (atom nil))
-(def image (atom nil))
+(def sprite-batch (atom nil))
+(def image-texture (atom nil))
 
 (defn -create [this]
-  (reset! batch (SpriteBatch.))
-  (reset! image (Texture. "libgdx.png")))
+  (reset! sprite-batch (SpriteBatch.))
+  (reset! image-texture (Texture. "libgdx.png")))
 
 (defn -render [this]
   (ScreenUtils/clear 0.15 0.15 0.2 1)
-  (.begin @batch)
-  (.draw @batch @image (float 140) (float 210))
-  (.end @batch))
+  (.begin @sprite-batch)
+  (.draw @sprite-batch @image-texture (float 140) (float 210))
+  (.end @sprite-batch))
 
 (defn -dispose [this]
   (stop-server nrepl-server)
-  (.dispose @batch)
-  (.dispose @image))
+  (.dispose @sprite-batch)
+  (.dispose @image-texture))
