@@ -28,3 +28,8 @@ parameters:
 compile clojure and run the game directly
 
     $ ./gradlew lwjgl3:run
+
+## TODO
+
+ - use [gradle-clojure](https://github.com/clojurephant/clojurephant) to convert deps.edn into gradle to unify dependencies
+ - add android distribution ablity once gradle is fully working with clojure code
