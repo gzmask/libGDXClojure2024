@@ -28,3 +28,13 @@ parameters:
 compile clojure and run the game directly
 
     $ ./gradlew lwjgl3:run
+
+## Package game
+
+make jar
+
+    $ ./gradlew lwjgl3:dist
+
+run jar
+
+    $java -jar lwjgl3/build/libs/libGDX-1-1.0.0.jar
