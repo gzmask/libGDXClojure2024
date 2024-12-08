@@ -35,21 +35,22 @@
 
 (defonce nrepl-server (start-server :port 7888))
 
-(def sprite-batch (atom nil))
-(def image-texture (atom nil))
-(def camera (atom nil))
-(def model-batch (atom nil))
+(def sprite-batch (delay (SpriteBatch.)))
+(def image-texture (delay (Texture. "libgdx.png")))
+(def camera
+  (delay (PerspectiveCamera.
+           67
+           (float (.getWidth Gdx/graphics))
+           (float (.getHeight Gdx/graphics)))))
+
+(def model-batch (delay (ModelBatch.)))
 (def ground-model (atom nil))
 (def ground-instance (atom nil))
-(def environment (atom nil))
+(def environment (delay (Environment.)))
 
 (defn- create-camera
   []
-  (reset! camera
-          (PerspectiveCamera.
-            67
-            (float (.getWidth Gdx/graphics))
-            (float (.getHeight Gdx/graphics))))
+  @camera
   (.set (.position @camera) 0 10 10)
   (.lookAt @camera 0 0 0)
   (set! (.-near @camera) 1)
@@ -58,7 +59,7 @@
 
 (defn- create-environment
   []
-  (reset! environment (Environment.))
+  @environment
   (.set @environment (ColorAttribute. ColorAttribute/AmbientLight Color/DARK_GRAY))
   (.add @environment
         (.set (DirectionalLight.) Color/WHITE (Vector3. 1 -3 1)))
@@ -78,9 +79,9 @@
 
 (defn -create
   [this]
-  (reset! sprite-batch (SpriteBatch.))
-  (reset! image-texture (Texture. "libgdx.png"))
-  (reset! model-batch (ModelBatch.))
+  @sprite-batch
+  @image-texture
+  @model-batch
   (create-camera)
   (create-environment)
 
