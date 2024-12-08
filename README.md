@@ -8,6 +8,8 @@ macOS Sonoma 14.6.1
 ## dependencies
 OpenJDK 23, Clojure 1.12.0, LibGDX 1.12.1
 
+    $./gradlew --refresh-dependencies
+
 ## project generation
 
 project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff)
