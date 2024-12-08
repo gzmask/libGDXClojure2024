@@ -38,3 +38,9 @@ make jar
 run jar
 
     $java -jar lwjgl3/build/libs/libGDX-1-1.0.0.jar
+
+make app
+
+    $./gradlew lwjgl3:packageMacM1
+
+app will be exported to `lwjgl3/build/construo/dist/libGDX-1-macM1.zip`
