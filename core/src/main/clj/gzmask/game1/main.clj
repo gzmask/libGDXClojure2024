@@ -46,6 +46,8 @@
 (def model-batch (delay (ModelBatch.)))
 (def ground-model (atom nil))
 (def ground-instance (atom nil))
+(def box-model (atom nil))
+(def box-instance (atom nil))
 (def environment (delay (Environment.)))
 
 (defn- create-camera
@@ -77,6 +79,18 @@
                         usage))
     (reset! ground-instance (ModelInstance. @ground-model))))
 
+(defn- create-box
+  [model-builder]
+  (let [material (Material. (into-array Attribute [(ColorAttribute/createDiffuse Color/RED)]))
+        usage (bit-or VertexAttributes$Usage/Position VertexAttributes$Usage/Normal VertexAttributes$Usage/TextureCoordinates)]
+    (reset! box-model
+            (.createBox model-builder
+                        1 1 1
+                        material
+                        usage))
+    (.set (.translation (first  (.-nodes @box-model))) 0 1 0)
+    (reset! box-instance (ModelInstance. @box-model))))
+
 (defn -create
   [this]
   @sprite-batch
@@ -86,7 +100,8 @@
   (create-environment)
 
   (let [builder (ModelBuilder.)]
-    (create-floor builder)))
+    (create-floor builder)
+    (create-box builder)))
 
 (defn -render
   [this]
@@ -97,10 +112,11 @@
   ;; Render 3D models
   (.begin @model-batch @camera)
   (.render @model-batch @ground-instance @environment)
+  (.render @model-batch @box-instance @environment)
   (.end @model-batch)
 
   (.begin @sprite-batch)
-  (.draw @sprite-batch @image-texture (float 140) (float 210))
+  (.draw @sprite-batch @image-texture (float 140) (float 310))
   (.end @sprite-batch))
 
 (defn -dispose
