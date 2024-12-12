@@ -31,17 +31,27 @@
     (com.badlogic.gdx.math
       Vector3)
     (com.badlogic.gdx.utils
-      ScreenUtils)))
+      ScreenUtils)
+    (com.badlogic.gdx.utils.viewport
+      FitViewport)))
+
 
 (defonce nrepl-server (start-server :port 7888))
 
 (def sprite-batch (delay (SpriteBatch.)))
 (def image-texture (delay (Texture. "libgdx.png")))
 (def camera
-  (delay (PerspectiveCamera.
-           67
-           (float (.getWidth Gdx/graphics))
-           (float (.getHeight Gdx/graphics)))))
+  (delay (doto (PerspectiveCamera. 67
+                                  (float (.getWidth Gdx/graphics))
+                                  (float (.getHeight Gdx/graphics)))
+           (-> (.position)
+               (.set 0 10 5))
+           (.lookAt 0 0 0)
+           (-> (.-near)
+               (set! 0.1))
+           (-> (.-far)
+               (set! 300))
+           (.update))))
 
 (def model-batch (delay (ModelBatch.)))
 (def ground-model (atom nil))
@@ -49,24 +59,14 @@
 (def box-model (atom nil))
 (def box-instance (atom nil))
 (def environment (delay (Environment.)))
-
-(defn- create-camera
-  []
-  @camera
-  (.set (.position @camera) 0 10 10)
-  (.lookAt @camera 0 0 0)
-  (set! (.-near @camera) 1)
-  (set! (.-far @camera) 300)
-  (.update @camera))
+(def directional-light (delay (DirectionalLight.)))
 
 (defn- create-environment
   []
   @environment
   (.set @environment (ColorAttribute. ColorAttribute/AmbientLight Color/DARK_GRAY))
   (.add @environment
-        (.set (DirectionalLight.) Color/WHITE (Vector3. 1 -3 1)))
-  (.add @environment
-        (.set (DirectionalLight.) Color/WHITE (Vector3. 1 1 1))))
+        (.set @directional-light Color/WHITE (Vector3. 1 -3 1))))
 
 (defn- create-floor
   [model-builder]
@@ -88,7 +88,7 @@
                         1 1 1
                         material
                         usage))
-    (.set (.translation (first  (.-nodes @box-model))) 0 1 0)
+    (.set (.translation (first  (.-nodes @box-model))) 0 0.5 0)
     (reset! box-instance (ModelInstance. @box-model))))
 
 (defn -create
@@ -96,19 +96,25 @@
   @sprite-batch
   @image-texture
   @model-batch
-  (create-camera)
+  @camera
   (create-environment)
 
   (let [builder (ModelBuilder.)]
     (create-floor builder)
     (create-box builder)))
 
+
 (defn -render
   [this]
-  (ScreenUtils/clear 0.15 0.15 0.2 1)
 
-  (.set (.position @camera) 1 10 10)
-  (.update @camera)
+  (.glViewport Gdx/gl
+               0 0
+               (float (.getWidth Gdx/graphics))
+               (float (.getHeight Gdx/graphics)))
+  (.glClear Gdx/gl
+            (bit-or GL20/GL_COLOR_BUFFER_BIT
+                    GL20/GL_DEPTH_BUFFER_BIT))
+
   ;; Render 3D models
   (.begin @model-batch @camera)
   (.render @model-batch @ground-instance @environment)
@@ -126,3 +132,12 @@
   (.dispose @image-texture)
   (.dispose @model-batch)
   (.dispose @ground-model))
+
+(comment
+
+  (.setDirection @directional-light 3 -3 0)
+  (.set (.position @camera) 2 10 10)
+  (.lookAt @camera 0 1 0)
+  (.update @camera)
+  (.set (.translation (first  (.-nodes @box-model))) 10 2.5 0)
+  )
