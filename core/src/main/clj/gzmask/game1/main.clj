@@ -27,6 +27,7 @@
     (com.badlogic.gdx.graphics.g3d.environment
       DirectionalLight)
     (com.badlogic.gdx.graphics.g3d.utils
+      CameraInputController
       ModelBuilder)
     (com.badlogic.gdx.math
       Vector3)
@@ -34,7 +35,6 @@
       ScreenUtils)
     (com.badlogic.gdx.utils.viewport
       FitViewport)))
-
 
 (defonce nrepl-server (start-server :port 7888))
 
@@ -52,6 +52,8 @@
            (-> (.-far)
                (set! 300))
            (.update))))
+(def camera-controller
+  (delay (CameraInputController. @camera)))
 
 (def model-batch (delay (ModelBatch.)))
 (def ground-model (atom nil))
@@ -66,7 +68,7 @@
   @environment
   (.set @environment (ColorAttribute. ColorAttribute/AmbientLight Color/DARK_GRAY))
   (.add @environment
-        (.set @directional-light Color/WHITE (Vector3. 1 -3 1))))
+        (.set @directional-light Color/WHITE (Vector3. -1 -0.8 -0.2))))
 
 (defn- create-floor
   [model-builder]
@@ -97,6 +99,8 @@
   @image-texture
   @model-batch
   @camera
+  @camera-controller
+  (.setInputProcessor Gdx/input @camera-controller)
   (create-environment)
 
   (let [builder (ModelBuilder.)]
@@ -106,6 +110,7 @@
 
 (defn -render
   [this]
+  (.update @camera-controller)
 
   (.glViewport Gdx/gl
                0 0
