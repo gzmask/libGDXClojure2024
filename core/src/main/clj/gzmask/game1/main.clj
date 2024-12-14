@@ -54,7 +54,7 @@
         (float (.getWidth Gdx/graphics))
         (float (.getHeight Gdx/graphics)))
       (-> (.position)
-          (.set 0 10 5))
+          (.set 0 10 10))
       (.lookAt 0 0 0)
       (-> (.-near)
           (set! 0.1))
@@ -125,11 +125,10 @@
 (defn -render
   [this]
   (.update @camera-controller)
-
   (.glViewport Gdx/gl
                0 0
-               (float (.getWidth Gdx/graphics))
-               (float (.getHeight Gdx/graphics)))
+               (* 2 (.getWidth Gdx/graphics))
+               (* 2 (.getHeight Gdx/graphics)))
   (.glClear Gdx/gl
             (bit-or GL20/GL_COLOR_BUFFER_BIT
                     GL20/GL_DEPTH_BUFFER_BIT))
