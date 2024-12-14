@@ -46,3 +46,7 @@ make app
     $./gradlew lwjgl3:packageMacM1
 
 app will be exported to `lwjgl3/build/construo/dist/libGDX-1-macM1.zip`
+
+### TODO voxel render
+
+- see https://stackoverflow.com/questions/62161618/low-fps-in-voxel-land-generation-with-opengl-libgdx
