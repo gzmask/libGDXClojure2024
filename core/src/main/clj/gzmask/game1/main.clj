@@ -159,4 +159,9 @@
   (.lookAt @camera 0 1 0)
   (.update @camera)
   (.set (.translation (first  (.-nodes @box-model))) 10 2.5 0)
+  (map (fn [m] (.getName m)) (.getMethods (.getClass @box-instance)))
+  (map (fn [m] (.getName m)) (.getFields (.getClass @box-instance)))
+  (.setToTranslation (.transform @box-instance) 0 0 0)
+  (.setToTranslation (.transform @obj-instance) 0 -1.1 0)
+
   )
