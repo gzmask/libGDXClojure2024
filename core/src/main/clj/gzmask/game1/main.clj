@@ -141,7 +141,7 @@
   (.end @model-batch)
 
   (.begin @sprite-batch)
-  (.draw @sprite-batch @image-texture (float 140) (float 310))
+  (.draw @sprite-batch @image-texture (float 5) (float 450) (float 100) (float 25))
   (.end @sprite-batch))
 
 (defn -dispose
